@@ -1,50 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Get My Location</title>
+  <title>My GPS Location</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px;
-    }
-    .location-box {
-      font-size: 1.5em;
-      margin-top: 20px;
-      padding: 20px;
-      border: 2px solid #333;
-      border-radius: 10px;
-      display: inline-block;
-      background-color: #f2f2f2;
-    }
+    body { font-family: sans-serif; text-align: center; padding: 30px; }
+    #output { margin-top: 20px; font-size: 1.2em; }
   </style>
 </head>
 <body>
-  <h1>📍 My Location</h1>
-  <p>This page will show your GPS location. Please allow location access and take a screenshot.</p>
+  <h2>📍 Lokasyon mo</h2>
+  <p>I-allow ang pahintulot kapag lumabas. Hintaying lumabas ang lat at long, pagkatapos ay screenshot at ipadala.</p>
 
-  <div class="location-box" id="locationBox">Waiting for location...</div>
+  <div id="output">⏳ Naghihintay ng lokasyon...</div>
 
   <script>
-    function showLocation(position) {
-      const latitude = position.coords.latitude.toFixed(6);
-      const longitude = position.coords.longitude.toFixed(6);
-      document.getElementById("locationBox").innerHTML =
-        `Latitude: <strong>${latitude}</strong><br>Longitude: <strong>${longitude}</strong>`;
+    const output = document.getElementById('output');
+
+    function showPosition(pos) {
+      const lat = pos.coords.latitude.toFixed(6);
+      const lng = pos.coords.longitude.toFixed(6);
+      output.innerHTML = `✅ Lat: <strong>${lat}</strong><br>✅ Long: <strong>${lng}</strong>`;
+      console.log("Got location:", lat, lng);
     }
 
-    function showError(error) {
-      document.getElementById("locationBox").innerHTML =
-        "❌ Unable to get location. Please allow GPS access.";
+    function showError(err) {
+      console.error("Location error:", err);
+      let msg = "";
+      switch (err.code) {
+        case err.PERMISSION_DENIED:
+          msg = "❌ Hindi pinayagan ang lokasyon.";
+          break;
+        case err.POSITION_UNAVAILABLE:
+          msg = "❌ Hindi makuha ang lokasyon.";
+          break;
+        case err.TIMEOUT:
+          msg = "❌ Nag-timeout. Walang GPS signal?";
+          break;
+        default:
+          msg = "❌ Hindi alam ang error.";
+      }
+      output.innerHTML = msg + "<br><small>Subukang i-refresh ang page.</small>";
     }
 
     if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(showLocation, showError);
+      navigator.geolocation.getCurrentPosition(showPosition, showError, {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      });
     } else {
-      document.getElementById("locationBox").innerHTML = "❌ Geolocation is not supported by this device.";
+      output.innerHTML = "❌ Hindi sinusuportahan ang geolocation.";
     }
   </script>
 </body>
 </html>
+
