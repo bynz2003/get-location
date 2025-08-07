@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Get My Location</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    .location-box {
+      font-size: 1.5em;
+      margin-top: 20px;
+      padding: 20px;
+      border: 2px solid #333;
+      border-radius: 10px;
+      display: inline-block;
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <h1>📍 My Location</h1>
+  <p>This page will show your GPS location. Please allow location access and take a screenshot.</p>
+
+  <div class="location-box" id="locationBox">Waiting for location...</div>
+
+  <script>
+    function showLocation(position) {
+      const latitude = position.coords.latitude.toFixed(6);
+      const longitude = position.coords.longitude.toFixed(6);
+      document.getElementById("locationBox").innerHTML =
+        `Latitude: <strong>${latitude}</strong><br>Longitude: <strong>${longitude}</strong>`;
+    }
+
+    function showError(error) {
+      document.getElementById("locationBox").innerHTML =
+        "❌ Unable to get location. Please allow GPS access.";
+    }
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(showLocation, showError);
+    } else {
+      document.getElementById("locationBox").innerHTML = "❌ Geolocation is not supported by this device.";
+    }
+  </script>
+</body>
+</html>
