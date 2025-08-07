@@ -7,6 +7,17 @@
   <style>
     body { font-family: sans-serif; text-align: center; padding: 30px; }
     #output { margin-top: 20px; font-size: 1.2em; }
+    #mapsButton {
+      margin-top: 20px;
+      display: none;
+      padding: 10px 20px;
+      font-size: 1.1em;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -14,14 +25,17 @@
   <p>I-allow ang pahintulot kapag lumabas. Hintaying lumabas ang lat at long, pagkatapos ay screenshot at ipadala.</p>
 
   <div id="output">⏳ Naghihintay ng lokasyon...</div>
+  <button id="mapsButton" onclick="openGoogleMaps()">Buksan ang Google Maps</button>
 
   <script>
     const output = document.getElementById('output');
+    const mapsButton = document.getElementById('mapsButton');
 
     function showPosition(pos) {
       const lat = pos.coords.latitude.toFixed(6);
       const lng = pos.coords.longitude.toFixed(6);
       output.innerHTML = `✅ Lat: <strong>${lat}</strong><br>✅ Long: <strong>${lng}</strong>`;
+      mapsButton.style.display = 'none';
       console.log("Got location:", lat, lng);
     }
 
@@ -42,6 +56,12 @@
           msg = "❌ Hindi alam ang error.";
       }
       output.innerHTML = msg + "<br><small>Subukang i-refresh ang page.</small>";
+      mapsButton.style.display = 'inline-block';
+    }
+
+    function openGoogleMaps() {
+      // Opens Google Maps to the user's current location
+      window.open("https://www.google.com/maps", "_blank");
     }
 
     if ("geolocation" in navigator) {
@@ -52,6 +72,7 @@
       });
     } else {
       output.innerHTML = "❌ Hindi sinusuportahan ang geolocation.";
+      mapsButton.style.display = 'inline-block';
     }
   </script>
 </body>
